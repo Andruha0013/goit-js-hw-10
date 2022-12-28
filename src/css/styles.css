@@ -18,3 +18,16 @@ body {
   max-width: 320px;
   margin-bottom: 16px;
 }
+
+.list{
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.country-infoList__item-info{
+  margin-left: 10px;
+}
+.contry-infoList__item-header{
+  font-weight: bold;
+}

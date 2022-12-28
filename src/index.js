@@ -9,64 +9,69 @@ const refs={
     list:           document.querySelector(".country-list"),
     outPutElement:  document.querySelector(".country-info"),
 };
-
+//=======================event==================================
 refs.searchInput.addEventListener("input",debounce(()=>{
 
     fetchCountries(refs.searchInput.value.trim())
     .then(countries=>{
         if(countries.length>=2 && countries.length<10){
-            refs.outPutElement.innerHTML="";
-            getCountriesList(countries,refs.list);
+            clearElementsInnerHtml([refs.list, refs.outPutElement]);
+            refs.list.innerHTML=getCountriesList(countries);
         }
         else if(countries.length==1){
-            refs.list.innerHTML="";
-            console.log(countries.length);
-            getCountiesInfo(countries,refs.outPutElement);
+            clearElementsInnerHtml([refs.list, refs.outPutElement]);
+            //console.log(countries.length);
+            refs.outPutElement.innerHTML=getCountiesInfo(countries);
         }
         else{
-            console.log(`countries = ${countries}`);
-            if(countries===404){
+            //console.log(`countries = ${countries}`);
+            if(countries==404){
+
                 Notify.failure("Oops, there is no country with that name");
+                clearElementsInnerHtml([refs.list, refs.outPutElement]);
             }
             else{
-                refs.outPutElement.innerHTML="";
-                refs.list.innerHTML="";
+                clearElementsInnerHtml([refs.list, refs.outPutElement]);
                 Notify.info("Too many matches found. Please enter a more specific name.");
             }
             
         }
+    })
+    .catch((error)=>{
+        //console.log(error);
     });
     //console.log(countries);
 }),DEBOUNCE_DELAY);
 
-function getCountriesList(countries,listElement){
-    let items="";
-    countries.map(country => {
-        items+=`<li>
+function getCountriesList(countries){
+    return  countries.map(country => 
+        `<li>
         <img width="50px" 
             src='${country.flags.svg}'
         </img>
         ${country.name}
-        </li>`;
-    });
-    listElement.innerHTML=items;
+        </li>`
+    ).join("");
 }
 
-function getCountiesInfo(countries,outPutElement){
-    let info="";
-    countries.map(country=>{
-        info+=`<h1>
+function getCountiesInfo(countries){
+    return countries.map(country=>
+        `<h1>
             <img width="50px" 
                 src='${country.flags.svg}'
             </img>
             ${country.name}
         </h1>
-        <ul>
-            <li>Capital:${country.capital}</li>
-            <li>Population:${country.population}</li>
-            <li>languages:${country.languages.map(lang=>{return lang.name})}</li>
-        </ul>`;
+        <ul class='country-infoList list'>
+            <li class='country-infoList__item'><span class='contry-infoList__item-header'>Capital:</span><span class='country-infoList__item-info'>${country.capital}</span></li>
+            <li class='country-infoList__item'><span class='contry-infoList__item-header'>Population:</span><span class='country-infoList__item-info'>${country.population}</span></li>
+            <li class='country-infoList__item'><span class='contry-infoList__item-header'>languages:</span><span class='country-infoList__item-info'>${country.languages.map(lang=>{return lang.name})}</span></li>
+        </ul>`
+    ).join("");
+}
+
+function clearElementsInnerHtml(elementsArray){
+    elementsArray.map((element)=>{
+        element.innerHTML="";
     });
-    console.log(info);
-    outPutElement.innerHTML=info;
 }

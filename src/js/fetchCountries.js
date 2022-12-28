@@ -3,18 +3,24 @@ function fetchCountries(name){
     const filters="?fields=name,capital,population,flags,languages";
     let query=url+name+filters;
     //console.log(url+country);
-    return fetch(query)
-    .then(respons=>{
-        //console.log(respons);
-        if(!respons.ok){
-            return respons.status;
-        }
-        return respons.json();
-    })
-    .catch(error=>{
-        //console.log(error);
-        return error;
-    });
+    try{
+        return fetch(query)
+        .then(respons=>{
+            //console.log(respons);
+            if(!respons.ok){
+                return respons.status;
+            }
+            return respons.json();
+        })
+        .catch(error=>{
+            //console.log(error);
+            return error;
+        });
+    }
+    catch(eror){
+        return eror;
+    }
+    
 }
 
 export {fetchCountries};
